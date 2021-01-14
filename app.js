@@ -1,13 +1,25 @@
-let Emitter = require('./emitter.js');
+const http = require('http');
+const fs = require('fs');
 
-let emtr = new Emitter();
+http.createServer(function(req,res){
+    
+    if(req.url === '/'){
+        let val = fs.createReadStream(__dirname+ '/index.htm').pipe(res);
+        res.end(val);
+    }
 
-emtr.on('greet',function(){
-    console.log('Hello 1 ')
-})
+    else if(req.url === '/api'){
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    const obj ={
+        Company : "Github",
+        Location : 'USA'
+    }
+    res.end(JSON.stringify(obj));
+    }
 
-emtr.on('greet',function(){
-    console.log('Hello 2 ')
-})
+    else{
+        res.writeHead(404);
+        res.end();
+    }
 
-emtr.emit('greet');
+}).listen(1337, '127.0.0.1'); 
